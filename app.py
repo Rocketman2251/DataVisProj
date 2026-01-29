@@ -11,6 +11,15 @@ import config
 from modules import data_loader, preprocessing
 from modules import flow_analysis, occupancy_analysis, delay_analysis
 from modules import visualization
+from modules.ml_integration import create_ml_tab
+import os
+
+# Verificar si los modelos están entrenados
+MODELS_TRAINED = (
+    os.path.exists('models/anomaly_detector.pkl') and
+    os.path.exists('models/anomaly_classifier.pkl') 
+)
+
 
 # Configure Streamlit page
 st.set_page_config(
@@ -235,12 +244,13 @@ def main():
     if st.session_state.df_processed is not None and filtered_df is not None and len(filtered_df) > 0:
         
         # Dashboard sections
-        tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
             f"{config.ICON_DASHBOARD} Dashboard Principal",
             f"{config.ICON_GROUP} Flujo de Pasajeros",
             f"{config.ICON_BUS} Ocupación del Sistema",
             f"{config.ICON_TIME} Análisis de Retrasos",
-            f"{config.ICON_STATS} Análisis Integrado"
+            f"{config.ICON_STATS} Análisis Integrado",
+            f"{config.ICON_FILTER} Análisis ML"
         ])
         
         # ==================== TAB 1: Main Dashboard ====================
@@ -636,7 +646,7 @@ def main():
             critical_lines = occupancy_analysis.get_critical_lines(filtered_df, threshold_occupancy=75)
             
             if len(critical_lines) > 0:
-                st.warning(f"⚠️ Se identificaron {len(critical_lines)} líneas críticas")
+                st.warning(f" Se identificaron {len(critical_lines)} líneas críticas")
                 st.dataframe(
                     critical_lines.rename(columns={
                         'linea': 'Línea',
@@ -701,7 +711,40 @@ def main():
             )
             st.plotly_chart(fig_corr, width='stretch')
         
-        # Export section
+        with tab6:
+            if MODELS_TRAINED:
+                create_ml_tab(filtered_df)  # Usa filtered_df que ya tienes
+            else:
+                st.warning(" Los modelos ML no están entrenados")
+                st.info("""
+                **Para habilitar el análisis ML:**
+                
+                1. Asegúrate de tener los modelos entrenados ejecutando:
+```bash
+                   python train_models.py
+```
+                
+                2. Recarga la aplicación
+                
+                Los modelos se guardarán en la carpeta `models/`.
+                """)
+                
+                with st.expander(" ¿Qué hace el análisis ML?"):
+                    st.markdown("""
+                    ### Sistema de Detección de Anomalías
+                    
+                    El sistema ML identifica automáticamente:
+                    -  **Horarios de almuerzo** de conductores
+                    -  **Eventos especiales** (conciertos, partidos)
+                    -  **Condiciones climáticas** adversas
+                    -  **Accidentes** de tráfico
+                    -  **Paros o huelgas**
+                    
+                    **Beneficios:**
+                    - Datos más limpios para análisis
+                    - Identificación automática de patrones
+                    - Mejores predicciones y decisiones
+                    """)
         st.divider()
         st.header(f"{config.ICON_DOWNLOAD} Descarga de Datos")
         
