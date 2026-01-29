@@ -290,17 +290,13 @@ Las contribuciones son bienvenidas. Por favor:
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
-### Licencia
-
-Este proyecto está bajo la licencia MIT. Ver `LICENSE` para más detalles.
-
 ### Autor
 
-Desarrollado como sistema académico para análisis y visualización de transporte urbano.
+Desarrollado por Aragón Troya Matías Sebastian
 
 **Universidad**: ULEAM (Universidad Laica Eloy Alfaro de Manabí)
 **Curso**: Visualización de Datos
-**Período**: 2024
+**Período**: 2025-02
 
 ### Soporte
 
@@ -308,13 +304,6 @@ Para reportar problemas o sugerencias:
 - Abre un issue en el repositorio
 - Envía un email con detalles del problema
 - Consulta la documentación en línea
-
-### Agradecimientos
-
-- Streamlit por la excelente framework de visualización
-- Plotly por los gráficos interactivos
-- Pandas por el manejo de datos
-- Comunidad de Python por las librerías utilizadas
 
 ---
 
